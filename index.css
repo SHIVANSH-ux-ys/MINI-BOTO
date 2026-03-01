@@ -1,0 +1,129 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;overflow:hidden;font-family:'Share Tech Mono',monospace}
+#gameCanvas{display:block;margin:0 auto}
+
+/* HUD */
+#ui{position:fixed;top:0;left:0;right:0;pointer-events:none;z-index:10}
+#hud{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:rgba(0,0,0,0.85);border-bottom:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(6px)}
+.hud-block{display:flex;flex-direction:column;align-items:center;gap:2px}
+.hud-label{font-size:9px;letter-spacing:3px;color:rgba(255,255,255,0.4);text-transform:uppercase}
+.hud-val{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:700;color:#fff}
+#timeDisplay{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;letter-spacing:4px;padding:4px 16px;border:1px solid;border-radius:2px;transition:all 0.5s}
+#timeDisplay.day{color:#ffd700;border-color:#ffd700;text-shadow:0 0 20px #ffd700}
+#timeDisplay.night{color:#8b5cf6;border-color:#8b5cf6;text-shadow:0 0 20px #8b5cf6}
+#timeDisplay.morning{color:#f97316;border-color:#f97316;text-shadow:0 0 20px #f97316}
+#timeDisplay.bike{color:#22d3ee;border-color:#22d3ee;text-shadow:0 0 20px #22d3ee}
+#timeDisplay.arena{color:#ef4444;border-color:#ef4444;text-shadow:0 0 20px #ef4444}
+
+/* Level badge */
+#levelBadge{font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:3px;padding:3px 12px;border-radius:20px;background:rgba(139,92,246,0.18);border:1px solid rgba(139,92,246,0.5);color:#c4b5fd}
+
+/* Alerts */
+#phaseAlert{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Orbitron',sans-serif;font-size:clamp(26px,5vw,50px);font-weight:900;letter-spacing:8px;opacity:0;pointer-events:none;transition:opacity 0.4s;z-index:50;text-align:center;line-height:1.4}
+#phaseAlert.show{opacity:1}
+#phaseAlert.day{color:#ffd700;text-shadow:0 0 40px #ffd700,0 0 80px #ffa500}
+#phaseAlert.night{color:#8b5cf6;text-shadow:0 0 40px #8b5cf6,0 0 80px #4c1d95}
+#phaseAlert.morning{color:#f97316;text-shadow:0 0 40px #f97316,0 0 80px #dc2626}
+#phaseAlert.bike{color:#22d3ee;text-shadow:0 0 40px #22d3ee,0 0 80px #0ea5e9}
+#phaseAlert.arena{color:#ef4444;text-shadow:0 0 40px #ef4444,0 0 80px #7f1d1d}
+
+/* LEVEL TRANSITION */
+#lvlTransition{position:fixed;inset:0;z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,0.97)}
+#lvlTransition.show{display:flex}
+.lvt-badge{font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:6px;color:rgba(255,255,255,0.4);margin-bottom:12px}
+.lvt-title{font-family:'Orbitron',sans-serif;font-size:clamp(32px,6vw,72px);font-weight:900;letter-spacing:6px;margin-bottom:16px}
+.lvt-sub{font-size:10px;letter-spacing:4px;color:rgba(255,255,255,0.35);margin-bottom:42px;max-width:500px;text-align:center;line-height:2}
+.lvt-btn{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;letter-spacing:4px;padding:14px 44px;background:transparent;border:1px solid rgba(255,255,255,0.3);color:#fff;cursor:pointer;transition:all 0.3s}
+.lvt-btn:hover{border-color:rgba(34,211,238,0.8);color:#67e8f9;text-shadow:0 0 15px #22d3ee}
+
+/* SEASON END */
+#seasonEnd{position:fixed;inset:0;z-index:300;display:none;flex-direction:column;align-items:center;justify-content:center;background:#000}
+#seasonEnd.show{display:flex;animation:fadeInSeason 1.5s forwards}
+@keyframes fadeInSeason{from{opacity:0}to{opacity:1}}
+.se-logo{font-family:'Orbitron',sans-serif;font-size:clamp(40px,8vw,100px);font-weight:900;letter-spacing:10px;color:#fff;text-shadow:0 0 60px rgba(139,92,246,0.8),0 0 120px rgba(139,92,246,0.3);margin-bottom:8px}
+.se-s1{font-family:'Orbitron',sans-serif;font-size:clamp(14px,3vw,28px);letter-spacing:8px;color:#ffd700;text-shadow:0 0 20px #ffd700;margin-bottom:30px}
+.se-msg{font-size:clamp(12px,2vw,18px);letter-spacing:4px;color:rgba(255,255,255,0.6);margin-bottom:12px;text-align:center}
+.se-s2{font-family:'Orbitron',sans-serif;font-size:clamp(20px,4vw,48px);font-weight:900;letter-spacing:6px;margin-top:20px;color:#22d3ee;text-shadow:0 0 30px #22d3ee,0 0 60px #0ea5e9;animation:s2pulse 1.8s ease-in-out infinite}
+@keyframes s2pulse{0%,100%{opacity:0.8;transform:scale(1)}50%{opacity:1;transform:scale(1.04)}}
+.se-stats{display:flex;gap:50px;margin:30px 0;padding:20px 40px;border:1px solid rgba(255,255,255,0.1);border-radius:4px;background:rgba(255,255,255,0.02)}
+.se-stat strong{display:block;font-family:'Orbitron',sans-serif;font-size:24px;color:#fff;margin-bottom:4px}
+.se-stat span{font-size:8px;letter-spacing:3px;color:rgba(255,255,255,0.3)}
+.se-replay{font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:4px;color:rgba(255,255,255,0.3);cursor:pointer;border:1px solid rgba(255,255,255,0.15);padding:10px 28px;margin-top:32px;transition:all 0.2s}
+.se-replay:hover{color:#fff;border-color:rgba(255,255,255,0.5)}
+
+/* Bars */
+#phaseBar{position:fixed;top:60px;left:0;right:0;height:4px;background:rgba(0,0,0,0.5)}
+#phaseFill{height:100%;transition:width 0.1s linear}
+#phaseFill.day{background:linear-gradient(90deg,#fbbf24,#f59e0b)}
+#phaseFill.night{background:linear-gradient(90deg,#7c3aed,#4c1d95)}
+#phaseFill.morning{background:linear-gradient(90deg,#f97316,#ef4444)}
+#phaseFill.bike{background:linear-gradient(90deg,#22d3ee,#0ea5e9)}
+#phaseFill.arena{background:linear-gradient(90deg,#ef4444,#7f1d1d)}
+
+#healthBar{position:fixed;bottom:20px;left:20px;display:flex;flex-direction:column;gap:6px}
+.bar-wrap{display:flex;align-items:center;gap:8px}
+.bar-label{font-size:9px;letter-spacing:2px;color:rgba(255,255,255,0.5);width:44px}
+.bar-bg{width:140px;height:8px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden}
+.bar-fill{height:100%;border-radius:2px;transition:width 0.3s}
+#hpFill{background:linear-gradient(90deg,#ef4444,#f97316)}
+#ammoFill{background:linear-gradient(90deg,#3b82f6,#06b6d4)}
+.ammo-count{font-size:11px;color:#3b82f6;letter-spacing:1px}
+
+/* Speed bar for bike */
+#speedBar{position:fixed;bottom:58px;left:20px;display:none;align-items:center;gap:8px}
+#speedBar.show{display:flex}
+#speedFill{background:linear-gradient(90deg,#22d3ee,#06b6d4)}
+
+#minimap{position:fixed;bottom:20px;right:20px;width:240px;height:90px;background:rgba(0,0,0,0.9);border:1px solid rgba(255,255,255,0.15);border-radius:4px;overflow:hidden}
+#minimap canvas{width:100%;height:100%}
+#minimapLabel{position:absolute;top:4px;left:8px;font-size:8px;letter-spacing:2px;color:rgba(255,255,255,0.35)}
+
+#statusMsg{position:fixed;top:80px;left:50%;transform:translateX(-50%);font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:3px;color:#fff;background:rgba(0,0,0,0.85);padding:6px 18px;border-radius:2px;opacity:0;transition:opacity 0.3s;pointer-events:none;border:1px solid rgba(255,255,255,0.15);white-space:nowrap}
+#statusMsg.show{opacity:1}
+#underground{position:fixed;top:70px;left:20px;font-size:9px;letter-spacing:2px;color:#4ade80;opacity:0;transition:opacity 0.3s;padding:4px 10px;border:1px solid #4ade80;border-radius:2px;background:rgba(74,222,128,0.08)}
+#underground.show{opacity:1}
+#dangerOverlay{position:fixed;inset:0;pointer-events:none;opacity:0;transition:opacity 0.3s;z-index:5}
+#dangerOverlay.show-night{opacity:1;box-shadow:inset 0 0 120px rgba(139,92,246,0.5)}
+#dangerOverlay.show-morning{opacity:1;box-shadow:inset 0 0 120px rgba(249,115,22,0.4)}
+#dangerOverlay.show-acid{opacity:1;box-shadow:inset 0 0 120px rgba(132,204,22,0.45)}
+#dangerOverlay.show-arena{opacity:1;box-shadow:inset 0 0 100px rgba(239,68,68,0.35)}
+#trapWarn{position:fixed;bottom:115px;left:50%;transform:translateX(-50%);font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:3px;color:#f97316;background:rgba(0,0,0,0.85);padding:5px 14px;border-radius:2px;opacity:0;transition:opacity 0.3s;pointer-events:none;border:1px solid #f97316}
+#trapWarn.show{opacity:1}
+
+/* SCREENS */
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;background:#000}
+.screen.hidden{display:none}
+#startScreen{background:radial-gradient(ellipse at 50% 60%,#0a0a14,#000)}
+.game-title{font-family:'Orbitron',sans-serif;font-size:clamp(38px,8vw,88px);font-weight:900;letter-spacing:10px;color:#fff;text-shadow:0 0 40px rgba(139,92,246,0.8),0 0 80px rgba(139,92,246,0.3);margin-bottom:4px}
+.game-sub{font-size:10px;letter-spacing:6px;color:rgba(255,255,255,0.35);margin-bottom:8px}
+.game-season{font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:6px;color:#ffd700;text-shadow:0 0 15px #ffd700;margin-bottom:40px}
+.start-btn{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;letter-spacing:4px;padding:15px 46px;background:transparent;border:1px solid rgba(255,255,255,0.25);color:#fff;cursor:pointer;transition:all 0.3s;margin-bottom:8px}
+.start-btn:hover{border-color:rgba(139,92,246,0.8);color:#c4b5fd;text-shadow:0 0 20px rgba(139,92,246,0.8)}
+.key-hints{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:28px;max-width:560px}
+.key-hint{text-align:center;padding:10px;border:1px solid rgba(255,255,255,0.07);border-radius:2px}
+.key-hint kbd{display:inline-block;background:rgba(255,255,255,0.07);padding:3px 8px;border-radius:2px;font-size:10px;color:#c4b5fd;margin-bottom:3px}
+.key-hint p{font-size:8px;letter-spacing:2px;color:rgba(255,255,255,0.35)}
+.level-preview{display:flex;gap:20px;margin:16px 0 28px;max-width:600px}
+.lp-item{flex:1;text-align:center;padding:12px;border:1px solid rgba(255,255,255,0.08);border-radius:4px;background:rgba(255,255,255,0.02)}
+.lp-icon{font-size:22px;margin-bottom:4px}
+.lp-name{font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:2px;color:#fff;margin-bottom:3px}
+.lp-desc{font-size:7px;color:rgba(255,255,255,0.35);letter-spacing:1px;line-height:1.5}
+
+#gameOverScreen{background:rgba(0,0,0,0.96)}
+.go-title{font-family:'Orbitron',sans-serif;font-size:clamp(28px,6vw,68px);font-weight:900;letter-spacing:8px;color:#ef4444;text-shadow:0 0 40px #ef4444;margin-bottom:6px}
+.go-sub{font-size:10px;letter-spacing:4px;color:rgba(255,255,255,0.35);margin-bottom:20px}
+.go-cause{font-size:11px;color:#f97316;letter-spacing:3px;margin-bottom:20px}
+.go-stats{display:flex;gap:36px;margin:14px 0 32px}
+.go-stat{text-align:center}
+.go-stat strong{display:block;font-family:'Orbitron',sans-serif;font-size:22px;color:#fff;margin-bottom:4px}
+.go-stat span{font-size:9px;letter-spacing:3px;color:rgba(255,255,255,0.35)}
+
+#controls{position:fixed;bottom:115px;left:20px;font-size:9px;color:rgba(255,255,255,0.22);line-height:1.9;letter-spacing:1px}
+
+/* BOSS HP BAR */
+#bossBar{position:fixed;top:80px;left:50%;transform:translateX(-50%);width:340px;display:none;flex-direction:column;align-items:center;gap:4px}
+#bossBar.show{display:flex}
+#bossName{font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:3px;color:#ef4444;text-shadow:0 0 10px #ef4444}
+#bossHpBg{width:100%;height:10px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;border:1px solid rgba(239,68,68,0.3)}
+#bossHpFill{height:100%;background:linear-gradient(90deg,#dc2626,#ef4444,#f97316);transition:width 0.2s;width:100%}

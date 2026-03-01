@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>UNDERRUN — Season 1</title>
+<link rel="stylesheet" href="index.css"/>
+</head>
+<body>
+
+
+<!-- SCREENS -->
+<div id="startScreen" class="screen">
+  <div class="game-title">AKSHIT MC</div>
+  <div class="game-sub">Survive the streets. Conquer the city.</div>
+  <div class="game-season">— SEASON 1 —</div>
+  <div class="level-preview">
+    <div class="lp-item"><div class="lp-icon">🏙️</div><div class="lp-name">LVL 1</div><div class="lp-desc">Surface &amp; Underground<br>Day/Night/Morning Cycle</div></div>
+    <div class="lp-item"><div class="lp-icon">🏍️</div><div class="lp-name">LVL 2</div><div class="lp-desc">Bike Chase<br>Acid Rain &amp; Bad Roads</div></div>
+    <div class="lp-item"><div class="lp-icon">⚔️</div><div class="lp-name">LVL 3</div><div class="lp-desc">Arena Combat<br>Armed Men &amp; Final Boss</div></div>
+  </div>
+  <button class="start-btn" id="startBtn">START SEASON 1</button>
+  <div class="key-hints">
+    <div class="key-hint"><kbd>A / D</kbd><p>Move</p></div>
+    <div class="key-hint"><kbd>W / ↑</kbd><p>Jump</p></div>
+    <div class="key-hint"><kbd>S / ↓</kbd><p>Crawl</p></div>
+    <div class="key-hint"><kbd>SPACE</kbd><p>Fire / Punch</p></div>
+    <div class="key-hint"><kbd>E</kbd><p>Interact</p></div>
+    <div class="key-hint"><kbd>R</kbd><p>Reload</p></div>
+    <div class="key-hint"><kbd>HOLD S</kbd><p>Brake (Bike)</p></div>
+    <div class="key-hint"><kbd>TAB</kbd><p>3D View</p></div>
+  </div>
+</div>
+
+<div id="gameOverScreen" class="screen hidden">
+  <div class="go-title">ELIMINATED</div>
+  <div class="go-sub">The city claimed another soul.</div>
+  <div class="go-cause" id="goCause"></div>
+  <div class="go-stats">
+    <div class="go-stat"><strong id="goScore">0</strong><span>Score</span></div>
+    <div class="go-stat"><strong id="goStage">1</strong><span>Stage</span></div>
+    <div class="go-stat"><strong id="goKills">0</strong><span>Kills</span></div>
+    <div class="go-stat"><strong id="goDistance">0</strong><span>Distance</span></div>
+  </div>
+  <button class="start-btn" id="restartBtn">TRY AGAIN</button>
+</div>
+
+<!-- LEVEL TRANSITION SCREENS -->
+<div id="lvlTransition">
+  <div class="lvt-badge" id="lvtBadge">LEVEL COMPLETE</div>
+  <div class="lvt-title" id="lvtTitle">STAGE 1 CLEAR</div>
+  <div class="lvt-sub" id="lvtSub">You survived the streets and sewers.<br>A motorcycle awaits at the checkpoint...</div>
+  <button class="lvt-btn" id="lvtBtn">CONTINUE →</button>
+</div>
+
+<!-- SEASON END -->
+<div id="seasonEnd">
+  <div class="se-logo">UNDERRUN</div>
+  <div class="se-s1">✦ SEASON 1 COMPLETE ✦</div>
+  <div class="se-msg">The boss is down. The city is yours. For now.</div>
+  <div class="se-stats">
+    <div class="se-stat"><strong id="seScore">0</strong><span>FINAL SCORE</span></div>
+    <div class="se-stat"><strong id="seKills">0</strong><span>TOTAL KILLS</span></div>
+    <div class="se-stat"><strong id="seDist">0</strong><span>DISTANCE</span></div>
+  </div>
+  <div class="se-s2">SEASON 2 — COMING SOON</div>
+  <div class="se-msg" style="margin-top:12px;font-size:9px;color:rgba(255,255,255,0.3)">Stay tuned. The story continues.</div>
+  <div class="se-replay" id="seReplay">[ PLAY AGAIN ]</div>
+</div>
+
+<!-- UI OVERLAYS -->
+<div id="ui">
+  <div id="hud">
+    <div class="hud-block">
+      <span class="hud-label">Score</span>
+      <span class="hud-val" id="scoreVal">0</span>
+    </div>
+    <div class="hud-block">
+      <div id="timeDisplay" class="day">☀ DAY</div>
+      <div style="font-size:8px;color:rgba(255,255,255,0.3);letter-spacing:2px;margin-top:2px" id="phaseCountdown">60s</div>
+    </div>
+    <div class="hud-block">
+      <span class="hud-label">Stage</span>
+      <span class="hud-val" id="stageVal">1-1</span>
+    </div>
+    <div id="levelBadge">LEVEL 1</div>
+  </div>
+  <div id="phaseBar"><div id="phaseFill" class="day" style="width:100%"></div></div>
+</div>
+
+<div id="phaseAlert"></div>
+<div id="statusMsg"></div>
+<div id="trapWarn"></div>
+<div id="underground">▼ IN SEWERS</div>
+<div id="dangerOverlay"></div>
+<div id="bossBar"><div id="bossName">BOSS</div><div id="bossHpBg"><div id="bossHpFill"></div></div></div>
+
+<div id="healthBar">
+  <div class="bar-wrap"><span class="bar-label">HP</span><div class="bar-bg"><div class="bar-fill" id="hpFill" style="width:100%"></div></div></div>
+  <div class="bar-wrap"><span class="bar-label">AMMO</span><div class="bar-bg"><div class="bar-fill" id="ammoFill" style="width:100%"></div></div><span class="ammo-count" id="ammoCount">12/12</span></div>
+  <div id="speedBar" class="bar-wrap"><span class="bar-label">SPD</span><div class="bar-bg"><div class="bar-fill" id="speedFill" style="width:60%"></div></div></div>
+</div>
+
+<div id="minimap"><span id="minimapLabel">MAP</span><canvas id="mapCanvas" width="240" height="90"></canvas></div>
+<div id="controls">WASD / Arrows — Move<br>SPACE — Fire/Punch &nbsp;&nbsp; R — Reload<br>E — Interact &nbsp;&nbsp; S — Brake (bike)<br>TAB — 3D View</div>
+
+<canvas id="gameCanvas"></canvas>
+
+
+<script src="script.js"></script>
+</body>
+</html>
